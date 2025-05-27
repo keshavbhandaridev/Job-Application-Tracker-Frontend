@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { validateConfirmPassword, validatePassword } from "../utils/registrationFormValidation";
+import useAuth from "../hooks/useAuth.tsx";
 
 interface RegisterFormData {
   name: string;
@@ -25,6 +26,7 @@ function RegisterForm() {
     agreeToTerms: false,
   });
   const [formErrors, setFormErrors] = useState<FormErrors>({});
+  const { registerUser } = useAuth();
 
   const handleFormValidations = (name: keyof RegisterFormData, value: string) => {
     if (formErrors[name as keyof FormErrors]) {
@@ -65,6 +67,11 @@ function RegisterForm() {
     e.preventDefault();
 
     if (isFormValid()) {
+      registerUser({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
       console.log("Registration form submitted:", formData);
     }
   };
