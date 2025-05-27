@@ -21,6 +21,7 @@ interface AuthSuccessData {
 const useAuth = () => {
   const navigate = useNavigate();
   const setUser = useUserStore((state) => state.setUser);
+  const clearUser = useUserStore((state) => state.clearUser);
 
   // Helper function to handle authentication success
   const handleAuthSuccess = (data: AuthSuccessData) => {
@@ -50,11 +51,18 @@ const useAuth = () => {
     },
   });
 
+  const logout = () => {
+    localStorage.removeItem("authToken");
+    clearUser();
+    navigate("/");
+  };
+
   return {
     registerUser,
     isSignUpPending,
     loginUser,
     isLoginPending,
+    logout,
   };
 };
 
