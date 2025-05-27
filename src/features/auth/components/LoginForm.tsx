@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 interface LoginFormData {
   email: string;
@@ -8,6 +9,7 @@ interface LoginFormData {
 }
 
 function LoginForm() {
+  const { loginUser } = useAuth();
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
@@ -24,7 +26,10 @@ function LoginForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    loginUser({
+      email: formData.email,
+      password: formData.password,
+    });
   };
 
   return (
