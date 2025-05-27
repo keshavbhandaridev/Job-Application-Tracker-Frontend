@@ -14,7 +14,7 @@ function AuthLayout({ title, illustrationTitle, illustrationDescription, childre
     <div className="flex min-h-screen bg-gray-50">
       {/* Left side - Illustration */}
       <div className="hidden lg:flex lg:w-1/2 bg-white flex-col items-center justify-center p-12">
-        <div className="max-w-md">
+        <div className="max-w-md mb-10">
           <JobIllustration />
           <div className="text-center mt-8">
             <h2 className="text-2xl font-bold text-gray-800">{illustrationTitle}</h2>

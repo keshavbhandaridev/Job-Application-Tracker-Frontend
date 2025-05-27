@@ -1,22 +1,81 @@
+// filepath: /home/keshav/Playground/job-tracker-application-frontend/src/features/auth/components/RegisterForm.tsx
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { validateConfirmPassword, validatePassword } from "../utils/registrationFormValidation";
+
+interface RegisterFormData {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  agreeToTerms: boolean;
+}
+
+interface FormErrors {
+  password?: string;
+  confirmPassword?: string;
+}
 
 function RegisterForm() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [formData, setFormData] = useState<RegisterFormData>({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    agreeToTerms: false,
+  });
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
+
+  const handleFormValidations = (name: keyof RegisterFormData, value: string) => {
+    if (formErrors[name as keyof FormErrors]) {
+      setFormErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
+    }
+
+    if (name === "password" && value) {
+      const passwordError = validatePassword(value);
+      setFormErrors((prev) => ({ ...prev, [name]: passwordError }));
+    }
+
+    if (name === "confirmPassword" && formData.password && value) {
+      const confirmPasswordError = validateConfirmPassword(formData.password, value);
+      setFormErrors((prev) => ({ ...prev, [name]: confirmPasswordError }));
+    }
+  };
+
+  const isFormValid = (): boolean => {
+    const errors: FormErrors = {};
+    let isValid = true;
+
+    errors.password = validatePassword(formData.password);
+    errors.confirmPassword = validateConfirmPassword(formData.password, formData.confirmPassword);
+    setFormErrors(errors);
+
+    Object.keys(errors).forEach((key) => {
+      if (errors[key as keyof FormErrors]) {
+        isValid = false;
+      }
+    });
+    return isValid;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      setPasswordError("Passwords do not match");
-      return;
+    if (isFormValid()) {
+      console.log("Registration form submitted:", formData);
     }
+  };
 
-    setPasswordError("");
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+    handleFormValidations(name as keyof RegisterFormData, value);
   };
 
   return (
@@ -28,11 +87,12 @@ function RegisterForm() {
           </label>
           <input
             id="name"
+            name="name"
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={formData.name}
             required
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            onChange={handleChange}
+            className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
             placeholder="John Doe"
           />
         </div>
@@ -43,11 +103,12 @@ function RegisterForm() {
           </label>
           <input
             id="email"
+            name="email"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
             placeholder="you@example.com"
           />
         </div>
@@ -58,40 +119,50 @@ function RegisterForm() {
           </label>
           <input
             id="password"
+            name="password"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className={`mt-1 block w-full rounded-md border ${
+              formErrors.password ? "border-red-500" : "border-gray-300"
+            } px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
             placeholder="••••••••"
           />
+          {formErrors.password && <p className="mt-1 text-sm text-red-600">{formErrors.password}</p>}
+          {!formErrors.password && formData.password && <p className="mt-1 text-sm text-green-600">Password meets requirements</p>}
         </div>
 
         <div>
-          <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
             Confirm Password
           </label>
           <input
-            id="confirm-password"
+            id="confirmPassword"
+            name="confirmPassword"
             type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            value={formData.confirmPassword}
+            onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className={`mt-1 block w-full rounded-md border ${
+              formErrors.confirmPassword ? "border-red-500" : "border-gray-300"
+            } px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
             placeholder="••••••••"
           />
-          {passwordError && <p className="mt-1 text-sm text-red-600">{passwordError}</p>}
+          {formErrors.confirmPassword && <p className="mt-1 text-sm text-red-600">{formErrors.confirmPassword}</p>}
         </div>
 
         <div className="flex items-center">
           <input
-            id="terms"
-            name="terms"
+            id="agreeToTerms"
+            name="agreeToTerms"
             type="checkbox"
+            checked={formData.agreeToTerms}
+            onChange={handleChange}
             required
             className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
           />
-          <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
+          <label htmlFor="agreeToTerms" className="ml-2 block text-sm text-gray-700">
             I agree to the{" "}
             <a href="#" className="text-blue-600 hover:text-blue-500">
               Terms of Service
@@ -112,26 +183,6 @@ function RegisterForm() {
           </button>
         </div>
       </form>
-
-      <div className="mt-6">
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="bg-gray-50 px-2 text-gray-500">Or</span>
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <button
-            type="button"
-            className="flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-          >
-            Sign up with Google
-          </button>
-        </div>
-      </div>
 
       <p className="mt-8 text-center text-sm text-gray-600">
         Already have an account?{" "}
