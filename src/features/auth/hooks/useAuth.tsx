@@ -3,6 +3,7 @@ import authService from "../services/authService";
 import type { ILoginUser } from "../services/authService";
 import useUserStore from "../store/userStore";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export interface IRegisterUser {
   name: string;
@@ -39,6 +40,10 @@ const useAuth = () => {
     },
     onSuccess: (data) => {
       handleAuthSuccess(data);
+      toast.success("Registration successful! Welcome aboard.");
+    },
+    onError: (error: Error) => {
+      toast.error(error?.message || "Registration failed. Please try again.");
     },
   });
 
@@ -48,6 +53,10 @@ const useAuth = () => {
     },
     onSuccess: (data) => {
       handleAuthSuccess(data);
+      toast.success(`Welcome back, ${data.user.name || "User"}!`);
+    },
+    onError: (error: Error) => {
+      toast.error(error?.message || "Login failed. Please check your credentials.");
     },
   });
 
@@ -55,6 +64,7 @@ const useAuth = () => {
     localStorage.removeItem("authToken");
     clearUser();
     navigate("/");
+    toast.success("You have been logged out successfully.");
   };
 
   return {

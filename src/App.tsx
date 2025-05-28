@@ -4,10 +4,12 @@ import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import JobsDashboard from "./features/jobs/components/jobsDashboard";
+import ToastProvider from "./providers/ToastProvider";
 
 function App() {
   return (
     <Router>
+      <ToastProvider />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />

@@ -26,7 +26,7 @@ function RegisterForm() {
     agreeToTerms: false,
   });
   const [formErrors, setFormErrors] = useState<FormErrors>({});
-  const { registerUser } = useAuth();
+  const { registerUser, isSignUpPending } = useAuth();
 
   const handleFormValidations = (name: keyof RegisterFormData, value: string) => {
     if (formErrors[name as keyof FormErrors]) {
@@ -72,7 +72,6 @@ function RegisterForm() {
         email: formData.email,
         password: formData.password,
       });
-      console.log("Registration form submitted:", formData);
     }
   };
 
@@ -101,6 +100,7 @@ function RegisterForm() {
             onChange={handleChange}
             className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
             placeholder="John Doe"
+            disabled={isSignUpPending}
           />
         </div>
 
@@ -117,6 +117,7 @@ function RegisterForm() {
             required
             className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
             placeholder="you@example.com"
+            disabled={isSignUpPending}
           />
         </div>
 
@@ -135,6 +136,7 @@ function RegisterForm() {
               formErrors.password ? "border-red-500" : "border-gray-300"
             } px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
             placeholder="••••••••"
+            disabled={isSignUpPending}
           />
           {formErrors.password && <p className="mt-1 text-sm text-red-600">{formErrors.password}</p>}
           {!formErrors.password && formData.password && <p className="mt-1 text-sm text-green-600">Password meets requirements</p>}
@@ -155,6 +157,7 @@ function RegisterForm() {
               formErrors.confirmPassword ? "border-red-500" : "border-gray-300"
             } px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500`}
             placeholder="••••••••"
+            disabled={isSignUpPending}
           />
           {formErrors.confirmPassword && <p className="mt-1 text-sm text-red-600">{formErrors.confirmPassword}</p>}
         </div>
@@ -168,6 +171,7 @@ function RegisterForm() {
             onChange={handleChange}
             required
             className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            disabled={isSignUpPending}
           />
           <label htmlFor="agreeToTerms" className="ml-2 block text-sm text-gray-700">
             I agree to the{" "}
@@ -184,9 +188,12 @@ function RegisterForm() {
         <div>
           <button
             type="submit"
-            className="mt-4 flex w-full justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className={`mt-4 flex w-full justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+              isSignUpPending ? "opacity-75 cursor-not-allowed" : ""
+            }`}
+            disabled={isSignUpPending}
           >
-            Sign up
+            {isSignUpPending ? "Signing up..." : "Sign up"}
           </button>
         </div>
       </form>
