@@ -1,21 +1,19 @@
+import StatisticsTiles from "./StatisticsTiles";
+
 const JobsDashboard = () => {
+  // Mock data - in a real application, this would come from a state or API
+  const statisticsData = {
+    totalApplications: 15,
+    interviewsScheduled: 3,
+    pendingResponses: 8,
+    offers: 1,
+    rejected: 3,
+  };
+
   return (
     <>
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white shadow-sm rounded-lg p-6">
-          <h2 className="text-lg font-medium text-gray-800">Total Applications</h2>
-          <p className="text-3xl font-bold text-blue-600 mt-2">15</p>
-        </div>
-        <div className="bg-white shadow-sm rounded-lg p-6">
-          <h2 className="text-lg font-medium text-gray-800">Interviews Scheduled</h2>
-          <p className="text-3xl font-bold text-green-600 mt-2">3</p>
-        </div>
-        <div className="bg-white shadow-sm rounded-lg p-6">
-          <h2 className="text-lg font-medium text-gray-800">Pending Responses</h2>
-          <p className="text-3xl font-bold text-amber-600 mt-2">8</p>
-        </div>
-      </div>
+      <StatisticsTiles data={statisticsData} />
 
       {/* Dummy Content */}
       <div className="bg-white shadow-sm rounded-lg p-6">
