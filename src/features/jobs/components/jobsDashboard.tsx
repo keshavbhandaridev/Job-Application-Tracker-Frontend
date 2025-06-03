@@ -1,7 +1,38 @@
+import { useState } from "react";
 import StatisticsTiles from "./StatisticsTiles";
 import JobsList from "./JobsList";
+import AddJobModal from "./AddJobModal";
+import toast from "react-hot-toast";
+
+interface JobFormData {
+  company: string;
+  role: string;
+  status: string;
+  isRemote: boolean;
+  country: string;
+  state: string;
+  city: string;
+  notes: string;
+}
 
 const JobsDashboard = () => {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsAddModalOpen(false);
+  };
+
+  const handleAddJob = (formData: JobFormData) => {
+    // In a real application, this would be an API call
+    console.log("New job data:", formData);
+    toast.success("Job added successfully!");
+    handleCloseModal();
+  };
+
   // Mock data - in a real application, this would come from a state or API
   const statisticsData = {
     totalApplications: 16,
@@ -248,6 +279,19 @@ const JobsDashboard = () => {
   return (
     <>
       {/* Stats Overview */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
+        <button
+          onClick={handleOpenModal}
+          className="flex items-center bg-blue-600 rounded-md px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 cursor-pointer"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Add Job
+        </button>
+      </div>
+
       <StatisticsTiles data={statisticsData} />
 
       {/* Recent Applications */}
@@ -255,6 +299,9 @@ const JobsDashboard = () => {
         <h2 className="text-xl font-medium text-gray-800 mb-4">Recent Applications</h2>
         <JobsList jobs={jobsData} />
       </div>
+
+      {/* Add Job Modal */}
+      <AddJobModal isOpen={isAddModalOpen} onClose={handleCloseModal} onSubmit={handleAddJob} />
     </>
   );
 };

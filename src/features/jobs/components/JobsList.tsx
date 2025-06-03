@@ -95,12 +95,6 @@ const JobsList: React.FC<JobsListProps> = ({ jobs }) => {
             </svg>
             Filter
           </button>
-          <button className="flex items-center bg-blue-600 rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-blue-700">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            Add Job
-          </button>
         </div>
       </div>
 
